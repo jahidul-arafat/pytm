@@ -316,6 +316,7 @@ class DatastoreType(Enum):
     SQL = "SQL"
     LDAP = "LDAP"
     AWS_S3 = "AWS_S3"
+    OCI_OSS = "OCI_OBJECT_STORAGE"          # Added by JA
 
     def label(self):
         return self.value.lower().replace("_", " ")
@@ -1513,6 +1514,7 @@ class Asset(Element):
     inputs = varElements([], doc="incoming Dataflows")
     outputs = varElements([], doc="outgoing Dataflows")
     onAWS = varBool(False)
+    onOCI = varBool(False)      # Added by JA
     handlesResources = varBool(False)
     usesEnvironmentVariables = varBool(False)
     OS = varString("")
@@ -1521,11 +1523,53 @@ class Asset(Element):
         super().__init__(name, **kwargs)
         TM._assets.append(self)
 
-
+# AWS Lambda function
 class Lambda(Asset):
-    """A lambda function running in a Function-as-a-Service (FaaS) environment"""
+    """An AWS lambda function running in a Function-as-a-Service (FaaS) environment"""
 
     onAWS = varBool(True)
+    environment = varString("")
+    implementsAPI = varBool(False)
+
+    def __init__(self, name, **kwargs):
+        super().__init__(name, **kwargs)
+
+    def _dfd_template(self):
+        return """{uniq_name} [
+    shape = {shape};
+
+    color = {color};
+    fontcolor = {color};
+    label = <
+        <table border="0" cellborder="0" cellpadding="2">
+            <tr><td><b>{label}</b></td></tr>
+        </table>
+    >;
+]
+"""
+
+    def dfd(self, **kwargs):
+        self._is_drawn = True
+
+        levels = kwargs.get("levels", None)
+        if levels and not levels & self.levels:
+            return ""
+
+        return self._dfd_template().format(
+            uniq_name=self._uniq_name(),
+            label=self._label(),
+            color=self._color(),
+            shape=self._shape(),
+        )
+
+    def _shape(self):
+        return "rectangle; style=rounded"
+
+# OCI Serverless Function is added by JA
+class ServerlessFunction(Asset):
+    """A OCI Serverless function running in a Function-as-a-Service (FaaS) environment"""
+
+    onOCI = varBool(True)
     environment = varString("")
     implementsAPI = varBool(False)
 
@@ -1590,6 +1634,7 @@ class Datastore(Asset):
     """An entity storing data"""
 
     onRDS = varBool(False)
+    onADB = varBool(False)      # OCI Autonomous Database, added by JA
     storesLogData = varBool(False)
     storesPII = varBool(
         False,
@@ -1607,7 +1652,8 @@ is any information relating to an identifiable person.""",
 * FILE_SYSTEM - files on a file system
 * SQL - A SQL Database
 * LDAP - An LDAP Server
-* AWS_S3 - An S3 Bucket within AWS"""
+* AWS_S3 - An S3 Bucket within AWS
+* OCI_OSS - An Object Storage Bucket within Oracle Cloud Infrastructure """
     )
 
     def __init__(self, name, **kwargs):
