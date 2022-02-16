@@ -317,7 +317,13 @@ class DatastoreType(Enum):
     SQL = "SQL"
     LDAP = "LDAP"
     AWS_S3 = "AWS_S3"
-    OCI_OSS = "OCI_OBJECT_STORAGE"  # Added by JA
+
+    # DataStorage types added by JA
+    OCI_OSS = "OCI_OBJECT_STORAGE"
+    OCI_BSS = "OCI Block Storage"
+    OCI_FSS = "OCI File Storage"
+    JSON = "JSON Database"
+    NoSQL = "NoSQL Database"
 
     def label(self):
         return self.value.lower().replace("_", " ")
@@ -1635,17 +1641,16 @@ class ExternalEntity(Asset):
 
 class Datastore(Asset):
     """An entity storing data"""
-
     onRDS = varBool(False)
-    onADB = varBool(False)  # OCI Autonomous Database, added by JA
-    storesLogData = varBool(False)
+    onADB = varBool(True)  # OCI Autonomous Database, added by JA
+    storesLogData = varBool(True)
     storesPII = varBool(
         False,
         doc="""Personally Identifiable Information
 is any information relating to an identifiable person.""",
     )
     storesSensitiveData = varBool(False)
-    isSQL = varBool(True)
+    isSQL = varBool(True)   # Default datastore is SQL
     isShared = varBool(False)
     hasWriteAccess = varBool(False)
     type = varDatastoreType(
@@ -1653,10 +1658,16 @@ is any information relating to an identifiable person.""",
         doc="""The  type of Datastore, values may be one of:
 * UNKNOWN - unknown applicable
 * FILE_SYSTEM - files on a file system
-* SQL - A SQL Database
-* LDAP - An LDAP Server
-* AWS_S3 - An S3 Bucket within AWS
-* OCI_OSS - An Object Storage Bucket within Oracle Cloud Infrastructure """
+* SQL       - A SQL Database
+* LDAP      - An LDAP Server
+* AWS_S3    - An S3 Bucket within AWS
+* OCI_OSS   - An Object Storage Bucket within Oracle Cloud Infrastructure 
+* OCI_BSS   - OCI Block Storage Service
+* OCI_FSS   - OCI File Storage Service
+* JSON      - JSON Database
+* NoSQL     - NoSQL Database
+
+"""
     )
 
     def __init__(self, name, **kwargs):
