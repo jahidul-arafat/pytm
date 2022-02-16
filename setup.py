@@ -5,15 +5,15 @@ with open("README.md", "r", encoding="utf-8") as f:
 
 setuptools.setup(
     name="pytm",
-    version="1.2.0",
+    version="1.2.1",
     packages=["pytm"],
     description="A Python-based framework for threat modeling.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="pytm team",
-    author_email="please_use_github_issues@nowhere.com",
+    author_email="jahidapon@gmail.com",
     license="MIT License",
-    url="https://github.com/izar/pytm",
+    url="https://github.com/jahidul-arafat/pytm",
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
