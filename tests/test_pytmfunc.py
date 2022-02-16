@@ -17,6 +17,7 @@ from pytm import (
     Datastore,
     ExternalEntity,
     Lambda,
+    ociFunction,
     Lifetime,
     Process,
     Finding,
