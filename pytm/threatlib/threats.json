@@ -3,6 +3,7 @@
     "SID": "INP01",
     "target": [
       "Lambda",
+      "ociFunction",
       "Process"
     ],
     "description": "Buffer Overflow via Environment Variables",
@@ -141,7 +142,8 @@
     "SID": "LB01",
     "target": [
       "Process",
-      "Lambda"
+      "Lambda",
+      "ociFunction"
     ],
     "description": "API Manipulation",
     "details": "An adversary manipulates the use or processing of an Application Programming Interface (API) resulting in an adverse impact upon the security of the system implementing the API. This can allow the adversary to execute functionality not intended by the API implementation, possibly compromising the system which integrates the API. API manipulation can take on a number of forms including forcing the unexpected use of an API, or the use of an API in an unintended way. For example, an adversary may make a request to an application that leverages a non-standard API that is known to incorrectly validate its data and thus it may be manipulated by supplying metacharacters or alternate encodings as input, resulting in any number of injection flaws, including SQL injection, cross-site scripting, or command execution. Another example could be API methods that should be disabled in a production application but were not, thus exposing dangerous functionality within a production environment.",
@@ -219,7 +221,8 @@
     "SID": "API01",
     "target": [
       "Process",
-      "Lambda"
+      "Lambda",
+      "ociFunction"
     ],
     "description": "Exploit Test APIs",
     "details": "An attacker exploits a sample, demonstration, or test API that is insecure by default and should not be resident on production systems. Some applications include APIs that are intended to allow an administrator to test and refine their domain. These APIs should usually be disabled once a system enters a production environment. Testing APIs may expose a great deal of diagnostic information intended to aid an administrator, but which can also be used by an attacker to further refine their attack. Moreover, testing APIs may not have adequate security controls or may not have undergone rigorous testing since they were not intended for use in production environments. As such, they may have many flaws and vulnerabilities that would allow an attacker to severely disrupt a target.",
@@ -313,7 +316,8 @@
     "SID": "AC03",
     "target": [
       "Process",
-      "Lambda"
+      "Lambda",
+      "ociFunction"
     ],
     "description": "Subverting Environment Variable Values",
     "details": "The attacker directly or indirectly modifies environment variables used by or controlling the target software. The attacker's goal is to cause the target software to deviate from its expected operation in a manner that benefits the attacker.",
@@ -331,7 +335,8 @@
       "Process",
       "Server",
       "Datastore",
-      "Lambda"
+      "Lambda",
+      "ociFunction"
     ],
     "description": "Excessive Allocation",
     "details": "An adversary causes the target to allocate excessive resources to servicing the attackers' request, thereby reducing the resources available for legitimate services and degrading or denying services. Usually, this attack focuses on memory allocation, but any finite resource on the target could be the attacked, including bandwidth, processing cycles, or other resources. This attack does not attempt to force this allocation through a large number of requests (that would be Resource Depletion through Flooding) but instead uses one or a small number of requests that are carefully formatted to force the target to allocate excessive resources to service this request(s). Often this attack takes advantage of a bug in the target to cause the target to allocate resources vastly beyond what would be needed for a normal request.",
@@ -347,7 +352,8 @@
     "SID": "DS02",
     "target": [
       "Lambda",
-      "Process"
+      "Process",
+      "ociFunction"
     ],
     "description": "Try All Common Switches",
     "details": "An attacker attempts to invoke all common switches and options in the target application for the purpose of discovering weaknesses in the target. For example, in some applications, adding a --debug switch causes debugging information to be displayed, which can sometimes reveal sensitive processing or configuration information to an attacker. This attack differs from other forms of API abuse in that the attacker is blindly attempting to invoke options in the hope that one of them will work rather than specifically targeting a known option. Nonetheless, even if the attacker is familiar with the published options of a targeted application this attack method may still be fruitful as it might discover unpublicized functionality.",
@@ -363,6 +369,7 @@
     "SID": "INP08",
     "target": [
       "Lambda",
+      "ociFunction",
       "Process",
       "Server"
     ],
@@ -425,6 +432,7 @@
     "SID": "INP12",
     "target": [
       "Lambda",
+      "ociFunction",
       "Process"
     ],
     "description": "Client-side Injection-induced Buffer Overflow",
@@ -486,6 +494,7 @@
     "SID": "INP13",
     "target": [
       "Lambda",
+      "ociFunction",
       "Process"
     ],
     "description": "Command Delimiters",
@@ -503,6 +512,7 @@
     "target": [
       "Process",
       "Lambda",
+      "ociFunction",
       "Server"
     ],
     "description": "Input Data Manipulation",
@@ -550,7 +560,8 @@
     "SID": "API02",
     "target": [
       "Process",
-      "Lambda"
+      "Lambda",
+      "ociFunction"
     ],
     "description": "Exploit Script-Based APIs",
     "details": "Some APIs support scripting instructions as arguments. Methods that take scripted instructions (or references to scripted instructions) can be very flexible and powerful. However, if an attacker can specify the script that serves as input to these methods they can gain access to a great deal of functionality. For example, HTML pages support <script> tags that allow scripting languages to be embedded in the page and then interpreted by the receiving web browser. If the content provider is malicious, these scripts can compromise the client application. Some applications may even execute the scripts under their own identity (rather than the identity of the user providing the script) which can allow attackers to perform activities that would otherwise be denied to them.",
@@ -1137,7 +1148,8 @@
     "SID": "INP24",
     "target": [
       "Process",
-      "Lambda"
+      "Lambda",
+      "ociFunction"
     ],
     "description": "Filter Failure through Buffer Overflow",
     "details": "In this attack, the idea is to cause an active filter to fail by causing an oversized transaction. An attacker may try to feed overly long input strings to the program in an attempt to overwhelm the filter (by causing a buffer overflow) and hoping that the filter does not fail securely (i.e. the user input is let into the system unfiltered).",
@@ -1153,7 +1165,8 @@
     "SID": "INP25",
     "target": [
       "Process",
-      "Lambda"
+      "Lambda",
+      "ociFunction"
     ],
     "description": "Resource Injection",
     "details": "An adversary exploits weaknesses in input validation by manipulating resource identifiers enabling the unintended modification or specification of a resource.",
@@ -1169,7 +1182,8 @@
     "SID": "INP26",
     "target": [
       "Process",
-      "Lambda"
+      "Lambda",
+      "ociFunction"
     ],
     "description": "Code Injection",
     "details": "An adversary exploits a weakness in input validation on the target to inject new code into that which is currently executing. This differs from code inclusion in that code inclusion involves the addition or replacement of a reference to a code file, which is subsequently loaded by the target and used as part of the code of some application.",
@@ -1572,5 +1586,31 @@
     "mitigations": "All passwords and other credentials should have a relatively short expiration date with a possibility to be revoked immediately under special circumstances.",
     "example": "",
     "references": "https://cwe.mitre.org/data/definitions/262.html, https://cwe.mitre.org/data/definitions/263.html, https://cwe.mitre.org/data/definitions/798.html"
+  },
+
+  {
+    "SID": "JP01",
+    "target": [
+      "Process"
+    ],
+    "description": "Insider Threat (Code Changes)",
+    "details": "If no procedure is in place to review code changes from the system developers, a backdoor or other malware cloud be inserted on the production systems.",
+    "Likelihood of Attack": "Medium",
+    "severity": "High",
+    "condition": "target.maxClassification is Classification.SENSITIVE",
+    "mitigations": "Code changes should undergo a review by the security team prior to entering production as part of SDLC."
+  },
+
+  {
+    "SID": "JP02",
+    "target": [
+      "Process"
+    ],
+    "description": "Fail-Open with Sensitive Security Systems",
+    "details": "Systems involved with the security of sensitive resources must fail ON to prevent loss through denial of service",
+    "Likelihood of Attack": "High",
+    "severity": "High",
+    "condition": "target.maxClassification is Classification.SENSITIVE",
+    "mitigations": "Ensure functionality is in place to fail closed."
   }
 ]

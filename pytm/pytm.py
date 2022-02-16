@@ -33,7 +33,6 @@ from .template_engine import SuperFormatter
     By Chris Beaumont
 """
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -242,6 +241,7 @@ class DataSet(set):
     def __str__(self):
         return ", ".join(sorted(set(d.name for d in self)))
 
+
 class varControls(var):
     def __set__(self, instance, value):
         if not isinstance(value, Controls):
@@ -250,6 +250,7 @@ class varControls(var):
                 "value, got a {}".format(type(value))
             )
         super().__set__(instance, value)
+
 
 class Action(Enum):
     """Action taken when validating a threat model."""
@@ -316,7 +317,7 @@ class DatastoreType(Enum):
     SQL = "SQL"
     LDAP = "LDAP"
     AWS_S3 = "AWS_S3"
-    OCI_OSS = "OCI_OBJECT_STORAGE"          # Added by JA
+    OCI_OSS = "OCI_OBJECT_STORAGE"  # Added by JA
 
     def label(self):
         return self.value.lower().replace("_", " ")
@@ -516,13 +517,14 @@ def _describe_classes(classes):
                     docs.append("required")
                 if attr.default or isinstance(attr.default, bool):
                     docs.append("default: {}".format(attr.default))
-            lpadding = f'\n{" ":<{longest+2}}'
+            lpadding = f'\n{" ":<{longest + 2}}'
             print(f"  {i:<{longest}}{lpadding.join(docs)}")
         print()
 
 
 def _list_elements():
     """List all elements which can be used in a threat model with the corisponding description"""
+
     def all_subclasses(cls):
         """Get all sub classes of a class"""
         subclasses = set(cls.__subclasses__())
@@ -535,16 +537,16 @@ def _list_elements():
         for sc in elements:
             doc = sc.__doc__ if sc.__doc__ is not None else ''
             print(f'{sc.__name__:<{max_len}} -- {doc}')
-    #print all elements
+
+    # print all elements
     print('Elements:')
     print_components(all_subclasses(Element))
 
     # Print Attributes
     print('\nAtributes:')
     print_components(
-            all_subclasses(OrderedEnum) | {Data, Action, Lifetime}
-            )
-
+        all_subclasses(OrderedEnum) | {Data, Action, Lifetime}
+    )
 
 
 def _get_elements_and_boundaries(flows):
@@ -655,9 +657,9 @@ Can be one of:
     cvss = varString("", required=False, doc="The CVSS score and/or vector")
 
     def __init__(
-        self,
-        *args,
-        **kwargs,
+            self,
+            *args,
+            **kwargs,
     ):
         if args:
             element = args[0]
@@ -689,10 +691,10 @@ Can be one of:
             for i in dir(f.__class__):
                 attr = getattr(f.__class__, i)
                 if (
-                    i in ("element", "target")
-                    or i.startswith("_")
-                    or callable(attr)
-                    or not isinstance(attr, var)
+                        i in ("element", "target")
+                        or i.startswith("_")
+                        or callable(attr)
+                        or not isinstance(attr, var)
                 ):
                     continue
                 if f in attr.data:
@@ -878,14 +880,13 @@ a brief description of the system being modeled."""
 
                 left_controls_attrs = left.controls._attr_values()
                 right_controls_attrs = right.controls._attr_values()
-                #for a in self._duplicate_ignored_attrs:
+                # for a in self._duplicate_ignored_attrs:
                 #    del left_controls_attrs[a], right_controls_attrs[a]
                 if left_controls_attrs != right_controls_attrs:
                     continue
                 if self.onDuplicates == Action.IGNORE:
                     right._is_drawn = True
                     continue
-
 
                 raise ValueError(
                     "Duplicate Dataflow found between {} and {}: "
@@ -1045,10 +1046,10 @@ a brief description of the system being modeled."""
             print(self.dfd(levels=(result.levels or set())))
 
         if (
-            result.report is not None
-            or result.json is not None
-            or result.sqldump is not None
-            or result.stale_days is not None
+                result.report is not None
+                or result.json is not None
+                or result.sqldump is not None
+                or result.stale_days is not None
         ):
             self.resolve()
 
@@ -1128,19 +1129,20 @@ a brief description of the system being modeled."""
         db = DAL("sqlite://" + filename, folder="sqldump")
 
         for klass in (
-            Server,
-            ExternalEntity,
-            Dataflow,
-            Datastore,
-            Actor,
-            Process,
-            SetOfProcesses,
-            Boundary,
-            TM,
-            Threat,
-            Lambda,
-            Data,
-            Finding,
+                Server,
+                ExternalEntity,
+                Dataflow,
+                Datastore,
+                Actor,
+                Process,
+                SetOfProcesses,
+                Boundary,
+                TM,
+                Threat,
+                Lambda,
+                ociFunction,
+                Data,
+                Finding,
         ):
             self.get_table(db, klass)
 
@@ -1164,6 +1166,7 @@ a brief description of the system being modeled."""
             if not i.startswith("_") and not callable(getattr(klass, i))
         ]
         return db.define_table(name, fields)
+
 
 class Controls:
     """Controls implemented by/on and Element"""
@@ -1257,13 +1260,11 @@ and only the user has), and inherence (something the user and only the user is).
             result[i] = value
         return result
 
-
     def _safeset(self, attr, value):
         try:
             setattr(self, attr, value)
         except ValueError:
             pass
-
 
 
 class Element:
@@ -1385,19 +1386,19 @@ a custom response, CVSS score or override other attributes.""",
         for boundary in boundaries:
             if inspect.isclass(boundary):
                 if (
-                    (
-                        isinstance(self.source.inBoundary, boundary)
-                        and not isinstance(self.sink.inBoundary, boundary)
-                    )
-                    or (
+                        (
+                                isinstance(self.source.inBoundary, boundary)
+                                and not isinstance(self.sink.inBoundary, boundary)
+                        )
+                        or (
                         not isinstance(self.source.inBoundary, boundary)
                         and isinstance(self.sink.inBoundary, boundary)
-                    )
-                    or self.source.inBoundary is not self.sink.inBoundary
+                )
+                        or self.source.inBoundary is not self.sink.inBoundary
                 ):
                     return True
             elif (self.source.inside(boundary) and not self.sink.inside(boundary)) or (
-                not self.source.inside(boundary) and self.sink.inside(boundary)
+                    not self.source.inside(boundary) and self.sink.inside(boundary)
             ):
                 return True
         return False
@@ -1514,7 +1515,7 @@ class Asset(Element):
     inputs = varElements([], doc="incoming Dataflows")
     outputs = varElements([], doc="outgoing Dataflows")
     onAWS = varBool(False)
-    onOCI = varBool(False)      # Added by JA
+    onOCI = varBool(False)  # Added by JA
     handlesResources = varBool(False)
     usesEnvironmentVariables = varBool(False)
     OS = varString("")
@@ -1522,6 +1523,7 @@ class Asset(Element):
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
         TM._assets.append(self)
+
 
 # AWS Lambda function
 class Lambda(Asset):
@@ -1565,8 +1567,9 @@ class Lambda(Asset):
     def _shape(self):
         return "rectangle; style=rounded"
 
+
 # OCI Serverless Function is added by JA
-class ServerlessFunction(Asset):
+class ociFunction(Asset):
     """A OCI Serverless function running in a Function-as-a-Service (FaaS) environment"""
 
     onOCI = varBool(True)
@@ -1634,7 +1637,7 @@ class Datastore(Asset):
     """An entity storing data"""
 
     onRDS = varBool(False)
-    onADB = varBool(False)      # OCI Autonomous Database, added by JA
+    onADB = varBool(False)  # OCI Autonomous Database, added by JA
     storesLogData = varBool(False)
     storesPII = varBool(
         False,
@@ -1779,9 +1782,9 @@ class Dataflow(Element):
 
         levels = kwargs.get("levels", None)
         if (
-            levels
-            and not levels & self.levels
-            and not (levels & self.source.levels and levels & self.sink.levels)
+                levels
+                and not levels & self.levels
+                and not (levels & self.source.levels and levels & self.sink.levels)
         ):
             return ""
 
@@ -1891,14 +1894,14 @@ def serialize(obj, nested=False):
         result["__class__"] = klass.__name__
     for i in dir(obj):
         if (
-            i.startswith("__")
-            or callable(getattr(klass, i, {}))
-            or (
+                i.startswith("__")
+                or callable(getattr(klass, i, {}))
+                or (
                 isinstance(obj, TM)
                 and i in ("_sf", "_duplicate_ignored_attrs", "_threats")
-            )
-            or (isinstance(obj, Element) and i in ("_is_drawn", "uuid"))
-            or (isinstance(obj, Finding) and i == "element")
+        )
+                or (isinstance(obj, Element) and i in ("_is_drawn", "uuid"))
+                or (isinstance(obj, Finding) and i == "element")
         ):
             continue
         value = getattr(obj, i)
@@ -1912,34 +1915,36 @@ def serialize(obj, nested=False):
             elif i == "levels" or i == "sourceFiles":
                 value = list(value)
             elif (
-                not nested
-                and not isinstance(value, str)
-                and isinstance(value, Iterable)
+                    not nested
+                    and not isinstance(value, str)
+                    and isinstance(value, Iterable)
             ):
                 value = [v.id if isinstance(v, Finding) else v.name for v in value]
         result[i.lstrip("_")] = value
     return result
 
+
 def encode_element_threat_data(obj):
     """Used to html encode threat data from a list of Elements"""
     encoded_elements = []
     if (type(obj) is not list):
-       raise ValueError("expecting a list value, got a {}".format(type(value)))
+        raise ValueError("expecting a list value, got a {}".format(type(value)))
 
     for o in obj:
-       c = copy.deepcopy(o)
-       for a in o._attr_values():
+        c = copy.deepcopy(o)
+        for a in o._attr_values():
             if (a == "findings"):
-               encoded_findings = encode_threat_data(o.findings)
-               c._safeset("findings", encoded_findings)
+                encoded_findings = encode_threat_data(o.findings)
+                c._safeset("findings", encoded_findings)
             else:
-               v = getattr(o, a)
-               if (type(v) is not list or (type(v) is list and len(v) != 0)):
-                  c._safeset(a, v)
-                 
-       encoded_elements.append(c)    
+                v = getattr(o, a)
+                if (type(v) is not list or (type(v) is list and len(v) != 0)):
+                    c._safeset(a, v)
+
+        encoded_elements.append(c)
 
     return encoded_elements
+
 
 def encode_threat_data(obj):
     """Used to html encode threat data from a list of threats or findings"""
