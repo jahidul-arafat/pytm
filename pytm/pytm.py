@@ -1522,6 +1522,7 @@ class Asset(Element):
     outputs = varElements([], doc="outgoing Dataflows")
     onAWS = varBool(False)
     onOCI = varBool(False)  # Added by JA
+    onPrem = varBool(False) # Added by JA
     handlesResources = varBool(False)
     usesEnvironmentVariables = varBool(False)
     OS = varString("")
