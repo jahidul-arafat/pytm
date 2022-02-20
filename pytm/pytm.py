@@ -1643,15 +1643,15 @@ class ExternalEntity(Asset):
 class Datastore(Asset):
     """An entity storing data"""
     onRDS = varBool(False)
-    onADB = varBool(True)  # OCI Autonomous Database, added by JA
-    storesLogData = varBool(True)
+    onADB = varBool(False)  # OCI Autonomous Database, added by JA
+    storesLogData = varBool(False)
     storesPII = varBool(
         False,
         doc="""Personally Identifiable Information
 is any information relating to an identifiable person.""",
     )
     storesSensitiveData = varBool(False)
-    isSQL = varBool(True)   # Default datastore is SQL
+    isSQL = varBool(False)   # Default datastore is SQL
     isShared = varBool(False)
     hasWriteAccess = varBool(False)
     type = varDatastoreType(
@@ -1720,7 +1720,6 @@ class Actor(Element):
         super().__init__(name, **kwargs)
         TM._actors.append(self)
 
-
 class Process(Asset):
     """An entity processing data"""
 
@@ -1730,6 +1729,8 @@ class Process(Asset):
     implementsAPI = varBool(False)
     environment = varString("")
     allowsClientSideScripting = varBool(False)
+    hasBandwidth = varBool(False)
+    bandwidth = varString("N/A")
 
     def __init__(self, name, **kwargs):
         super().__init__(name, **kwargs)
@@ -1904,6 +1905,7 @@ def serialize(obj, nested=False):
     result = {}
     if isinstance(obj, (Actor, Asset)):
         result["__class__"] = klass.__name__
+
     for i in dir(obj):
         if (
                 i.startswith("__")
@@ -1931,7 +1933,7 @@ def serialize(obj, nested=False):
                     and not isinstance(value, str)
                     and isinstance(value, Iterable)
             ):
-                value = [v.id if isinstance(v, Finding) else v.name for v in value]
+                value = [v.id if isinstance(v, Finding) else v for v in value] # else v.name is replaced with v to mitigate the sqldump error
         result[i.lstrip("_")] = value
     return result
 
